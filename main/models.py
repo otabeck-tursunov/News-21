@@ -3,7 +3,7 @@ from django.utils.text import slugify
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -24,6 +24,7 @@ class Article(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
     image = models.ImageField(upload_to='articles/')
     reading_time = models.DurationField(blank=True, null=True)
+    author = models.CharField(max_length=255, default="Jasur Usmon")
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
