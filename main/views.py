@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .models import *
 
 
 class HomeView(View):
     def get(self, request):
-
         top5_categories = [
             Article.objects.filter(category__name='Jahon')[:6],
             Article.objects.filter(category__name='Iqtisodiyot')[:6],
@@ -28,3 +27,14 @@ class HomeView(View):
         if email is not None:
             NewsLetter.objects.create(email=email)
         return redirect('home')
+
+
+class DetailView(View):
+    def get(self, request, slug):
+        article = get_object_or_404(Article, slug=slug)
+        likes = Article.objects.filter(category=article.category).filter(published=True).order_by('-created_at')[:2]
+        context = {
+            'article': article,
+            'likes': likes,
+        }
+        return render(request, 'detail-page.html', context)
